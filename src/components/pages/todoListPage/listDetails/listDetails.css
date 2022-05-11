@@ -1,0 +1,17 @@
+.list-title {
+    font-size: 1.5em;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.minor {
+    font-size: 0.8em;
+    color: gray;
+}
+
+.item-completed {
+    text-decoration: line-through;
+}
