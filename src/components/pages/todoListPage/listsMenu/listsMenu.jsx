@@ -40,12 +40,10 @@ export const ListsMenu = (props) => {
     const [createListModalOpen, setCreateListModalOpen] = useState(false);
 
     if (isLoading) {
-        return
+        return (<Spinner/>);
     }
 
-    return isLoading ? (
-        <Spinner/>
-    ) : (
+    return (
         <Paper elevation={3}>
             <List
                 sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}

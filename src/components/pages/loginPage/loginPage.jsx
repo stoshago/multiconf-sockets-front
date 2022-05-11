@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useContext} from 'react';
 import {Box, Button, Container, Paper, TextField, Typography} from '@mui/material';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -7,11 +7,13 @@ import {schemaLogin} from '../../../utills/schema';
 import {Spinner} from '../../spinner';
 import {useNavigate} from 'react-router-dom';
 import AuthService from "../../../service/authService";
+import {AuthContext} from "../../../context/authContext";
 
 import './loginPage.css';
 
 export const LogInPage = () => {
     const navigate = useNavigate();
+    const {setAuth} = useContext(AuthContext);
     const [error, setError] = useState(null);
     const [isLoading, setLoading] = useState(false);
 
@@ -24,7 +26,8 @@ export const LogInPage = () => {
     const onSubmit = (data) => {
         setLoading(true);
         AuthService.authUser(data)
-            .then(() => {
+            .then((data) => {
+                setAuth(data);
                 navigate('/todos');
             })
             .catch(() => {

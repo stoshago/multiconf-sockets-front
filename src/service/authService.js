@@ -6,7 +6,7 @@ const saveToken = (response) => {
     if (response.token) {
         localStorage.setItem(AUTH_KEY, JSON.stringify(response));
     }
-    return response.data;
+    return response;
 }
 
 class AuthService {

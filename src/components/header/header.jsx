@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
@@ -7,13 +7,16 @@ import Typography from "@mui/material/Typography";
 import Toolbar from '@mui/material/Toolbar';
 import AuthService from "../../service/authService";
 import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../../context/authContext";
 
 export const Header = () => {
 
+    const {setAuth} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogOut = () => {
         AuthService.logout();
+        setAuth(null);
         navigate('/login');
     }
 
