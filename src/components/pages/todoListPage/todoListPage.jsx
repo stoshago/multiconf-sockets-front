@@ -17,7 +17,7 @@ export const TodoListPage = () => {
     const [publicLists, setPublicLists] = useState([]);
     const [isLoading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const pullData = () => {
         TodoService.getAllLists().then(
             ({privateLists, publicLists}) => {
                 setPublicLists(publicLists);
@@ -25,6 +25,10 @@ export const TodoListPage = () => {
                 setLoading(false);
             }
         );
+    }
+
+    useEffect(() => {
+        pullData();
     }, []);
 
     useEffect(() => {
@@ -40,14 +44,11 @@ export const TodoListPage = () => {
                 navigate('/todos?deleted');
             }
         });
-        subscribe("private-lists-update", (topic, items) => {
-            setPrivateLists((prevLists) => {
-                if (prevLists.some(item => selectedList === item.id)) {
-                    selectList(null);
-                    navigate('/todos?deleted');
-                }
-                return items
-            });
+        subscribe("private-lists-update", () => {
+            setLoading(true);
+            selectList(null);
+            pullData();
+            navigate('/todos?updatedAll');
         });
 
         return () => {
