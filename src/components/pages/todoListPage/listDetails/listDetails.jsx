@@ -49,7 +49,7 @@ export const ListDetails = ({listId}) => {
                     ...oldList,
                     items: oldList.items.map((item) => {
                         if (message.itemId === item.id) {
-                            item.completed = message.isCompleted
+                            item.completed = message.completed
                         }
                         return item;
                     })
