@@ -1,9 +1,10 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import {IconButton} from "@mui/material";
 import Box from "@mui/material/Box";
+import Button from '@mui/material/Button';
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Toolbar from '@mui/material/Toolbar';
 import AuthService from "../../service/authService";
 import {useNavigate} from "react-router-dom";
 
@@ -18,10 +19,13 @@ export const Header = () => {
 
     const logOutBtn = () => {
         return (
-            <Button
-                color="inherit"
-                onClick={handleLogOut}
-            >Log Out</Button>
+            <React.Fragment>
+                <Typography><b>{AuthService.getCurrentUser().displayName}</b></Typography>
+                <Button
+                    color="inherit"
+                    onClick={handleLogOut}
+                >Log Out</Button>
+            </React.Fragment>
         );
     };
 
