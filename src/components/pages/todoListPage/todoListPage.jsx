@@ -40,10 +40,20 @@ export const TodoListPage = () => {
                 navigate('/todos?deleted');
             }
         });
+        subscribe("private-lists-update", (topic, items) => {
+            setPrivateLists((prevLists) => {
+                if (prevLists.some(item => selectedList === item.id)) {
+                    selectList(null);
+                    navigate('/todos?deleted');
+                }
+                return items
+            });
+        });
 
         return () => {
             unsubscribe("list-added");
             unsubscribe("list-deleted");
+            unsubscribe("private-lists-update");
         }
     }, [subscribe, unsubscribe, navigate, selectedList]);
 
