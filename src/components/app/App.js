@@ -5,6 +5,7 @@ import {LogInPage} from "../pages/loginPage";
 import {SignUpPage} from "../pages/signupPage";
 import {TodoListPage} from "../pages/todoListPage";
 import PrivateRoute from "../privateRoute/PrivateRoute";
+import {EventService} from "../../service/eventService";
 import {AuthContext} from "../../context/authContext";
 import AuthService from "../../service/authService";
 
@@ -14,20 +15,22 @@ const App = () => {
 
     return (
         <AuthContext.Provider value={{auth, setAuth}}>
-            <BrowserRouter>
-                <Layout>
-                    <Routes>
-                        <Route path="/"
-                               element={<Navigate to='/todos' replace/>}/>
-                        <Route path="/login" element={<LogInPage/>}/>
-                        <Route path="/signup" element={<SignUpPage/>}/>
-                        <Route path="/todos"
-                               element={<PrivateRoute component={TodoListPage}/>}/>
-                        <Route path="/todos/:listId"
-                               element={<PrivateRoute component={TodoListPage}/>}/>
-                    </Routes>
-                </Layout>
-            </BrowserRouter>
+            <EventService auth={auth}>
+                <BrowserRouter>
+                    <Layout>
+                        <Routes>
+                            <Route path="/"
+                                   element={<Navigate to='/todos' replace/>}/>
+                            <Route path="/login" element={<LogInPage/>}/>
+                            <Route path="/signup" element={<SignUpPage/>}/>
+                            <Route path="/todos"
+                                   element={<PrivateRoute component={TodoListPage}/>}/>
+                            <Route path="/todos/:listId"
+                                   element={<PrivateRoute component={TodoListPage}/>}/>
+                        </Routes>
+                    </Layout>
+                </BrowserRouter>
+            </EventService>
         </AuthContext.Provider>
     );
 }

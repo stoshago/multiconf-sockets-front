@@ -1,17 +1,18 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Button, ButtonGroup, Container, Grid, Paper} from "@mui/material";
 import {Spinner} from "../../../spinner";
 import TodoService from "../../../../service/todoService";
 import {CustomIcon} from "../../../customIcon";
 import PersonIcon from '@mui/icons-material/Person';
 import Alert from "@mui/material/Alert";
-
-import './listDetails.css';
 import {ConfirmationDialog} from "../../../confirmationDialog/confirmationDialog";
 import {AddNewItemModal} from "./addNewItemModal";
 import {ItemList} from "./ItemList";
+import {EventServiceContext} from "../../../../service/eventService";
 
-export const ListDetails = ({listId, onListDeleted}) => {
+import './listDetails.css';
+
+export const ListDetails = ({listId}) => {
 
     const [isLoading, setLoading] = useState(!!listId);
     const [error, setError] = useState();
@@ -20,12 +21,73 @@ export const ListDetails = ({listId, onListDeleted}) => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [createItemModal, setCreateItemModal] = useState(false);
 
+    const {subscribe, unsubscribe} = useContext(EventServiceContext);
+
+    useEffect(() => {
+        setError(null);
+        if (!listId) {
+            setLoading(false);
+            setList(null);
+            return;
+        }
+        TodoService.getList(listId)
+            .then((resp) => {
+                setList(resp);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error(err);
+                setError("Failed to pull data");
+                setLoading(false);
+            })
+    }, [listId]);
+
+    useEffect(() => {
+        subscribe("item-completed", (topic, message) => {
+            setList((oldList) => {
+                return {
+                    ...oldList,
+                    items: oldList.items.map((item) => {
+                        if (message.itemId === item.id) {
+                            item.completed = message.isCompleted
+                        }
+                        return item;
+                    })
+                }
+            })
+        });
+
+        subscribe("list-update", (topic, data) => {
+            setList(data);
+        });
+        subscribe("item-deleted", (topic, {itemId}) => {
+            setList((prevList) => {
+                return {
+                    ...prevList,
+                    items: prevList.items.filter(item => itemId !== item.id)
+                }
+            });
+        });
+        subscribe("item-added", (topic, item) => {
+            setList((prevList) => {
+                return {
+                    ...prevList,
+                    items: [...prevList.items, item]
+                }
+            });
+        });
+        return () => {
+            unsubscribe("item-completed");
+            unsubscribe("item-deleted");
+            unsubscribe("list-update");
+            unsubscribe("item-added");
+        }
+    }, [subscribe, unsubscribe]);
+
     const onListDelete = () => {
         TodoService.deleteList(listId)
             .then(() => {
                 setDeleteModalOpen(false);
-                setList();
-                onListDeleted(list);
             }).catch((err) => {
                 console.error(err);
                 setDeleteModalOpen(false);
@@ -34,30 +96,8 @@ export const ListDetails = ({listId, onListDeleted}) => {
         )
     }
 
-    const onItemCreated = (item) => {
-        setList(oldList => {
-            return {
-                ...oldList,
-                items: [...oldList.items, item]
-            }
-        });
-    }
-
     const onMarkItemCompleted = (itemId, isCompleted) => {
         return TodoService.setItemCompleted(itemId, isCompleted)
-            .then(() => {
-                setList((oldList) => {
-                    return {
-                        ...oldList,
-                        items: oldList.items.map((item) => {
-                            if (itemId === item.id) {
-                                item.completed = isCompleted
-                            }
-                            return item;
-                        })
-                    }
-                })
-            })
             .catch((err) => {
                 console.error(err);
                 setError("Failed to complete Item");
@@ -79,24 +119,6 @@ export const ListDetails = ({listId, onListDeleted}) => {
                 setError("Failed to delete Item");
             })
     }
-
-    useEffect(() => {
-        setError(null);
-        if (!listId) {
-            setLoading(false);
-            return;
-        }
-        TodoService.getList(listId)
-            .then((resp) => {
-                setList(resp);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setError("Failed to pull data");
-                setLoading(false);
-            })
-    }, [listId]);
 
     if (isLoading) {
         return (
@@ -182,7 +204,6 @@ export const ListDetails = ({listId, onListDeleted}) => {
 
             <AddNewItemModal isOpen={createItemModal}
                              onClose={() => setCreateItemModal(false)}
-                             onItemCreated={onItemCreated}
                              listId={list.id}/>
         </Paper>
     );

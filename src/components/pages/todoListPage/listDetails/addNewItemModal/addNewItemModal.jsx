@@ -22,7 +22,7 @@ const Divider = () => (
     </DialogContentText>
 )
 
-export const AddNewItemModal = ({isOpen, onClose, onItemCreated, listId}) => {
+export const AddNewItemModal = ({isOpen, onClose, listId}) => {
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -55,10 +55,7 @@ export const AddNewItemModal = ({isOpen, onClose, onItemCreated, listId}) => {
         event.preventDefault();
         setLoading(true);
         TodoService.createItem(listId, formValues)
-            .then((resp) => {
-                onItemCreated(resp);
-                handleClose();
-            })
+            .then(handleClose)
             .catch((err) => {
                 console.error('Create ToDo item error', err)
                 setError("Something went wrong during ToDo item saving!");

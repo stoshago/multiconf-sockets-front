@@ -29,7 +29,7 @@ const Divider = () => (
     </DialogContentText>
 )
 
-export const AddNewListModal = ({isOpen, onClose, onListCreated}) => {
+export const AddNewListModal = ({isOpen, onClose}) => {
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -77,10 +77,7 @@ export const AddNewListModal = ({isOpen, onClose, onListCreated}) => {
         event.preventDefault();
         setLoading(true);
         TodoService.createList(formValues)
-            .then((resp) => {
-                onListCreated(resp);
-                handleClose();
-            })
+            .then(handleClose)
             .catch((err) => {
                 console.error('Create ToDo list error', err)
                 setError("Something went wrong during list saving!");
