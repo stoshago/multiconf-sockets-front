@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import PubSub from 'pubsub-js';
+import {getRandomHost} from "./elbService";
 
 const EventServiceContext = createContext({
     subscribe: null,
@@ -17,7 +18,7 @@ const EventService = ({children, auth}) => {
             return;
         }
         // Only path and protocol field can be specified, but no headers in place.
-        const ws = new window.WebSocket(`ws://localhost:8080/web-socket?token=${auth.token}`);
+        const ws = new window.WebSocket(`ws://${getRandomHost()}:8080/web-socket?token=${auth.token}`);
 
         // Receive and publish incoming messages from websocket
         ws.addEventListener('message', function (messageEvent) {

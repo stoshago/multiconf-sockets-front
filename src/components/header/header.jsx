@@ -8,6 +8,7 @@ import Toolbar from '@mui/material/Toolbar';
 import AuthService from "../../service/authService";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../../context/authContext";
+import {getRandomHost} from "../../service/elbService";
 
 export const Header = () => {
 
@@ -57,6 +58,7 @@ export const Header = () => {
                 >
                     <img src="/images/trident.png" alt="trident" style={{maxHeight: '3rem'}}/>
                 </IconButton>
+                <p>{getRandomHost()}</p>
                 <Box sx={{flexGrow: 1}}/>
                 {logInOutBtn()}
             </Toolbar>

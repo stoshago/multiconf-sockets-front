@@ -1,7 +1,8 @@
 import axios from 'axios';
+import {getRandomHost} from "./elbService";
 
 export const axiosInstance = axios.create({
-    baseURL: `http://localhost:8080/`,
+    baseURL: `http://${getRandomHost()}:8080/`,
     headers: {
         'Content-Type': 'application/json',
     },
