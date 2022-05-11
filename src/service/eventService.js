@@ -18,7 +18,7 @@ const EventService = ({children, auth}) => {
             return;
         }
         // Only path and protocol field can be specified, but no headers in place.
-        const ws = new window.WebSocket(`ws://${getRandomHost()}:8080/web-socket?token=${auth.token}`);
+        const ws = new window.WebSocket(`ws://${getRandomHost()}/web-socket?token=${auth.token}`);
 
         // Receive and publish incoming messages from websocket
         ws.addEventListener('message', function (messageEvent) {
