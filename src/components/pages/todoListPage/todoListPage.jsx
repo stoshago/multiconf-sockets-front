@@ -36,10 +36,10 @@ export const TodoListPage = () => {
             const setCorrectList = list.public ? setPublicLists : setPrivateLists;
             setCorrectList((prevList) => [...prevList, list]);
         });
-        subscribe("list-deleted", (topic, {listId, isPublic}) => {
-            const setCorrectList = isPublic ? setPublicLists : setPrivateLists;
-            setCorrectList((prevList) => prevList.filter(item => item.id !== listId));
-            if (selectedList === listId) {
+        subscribe("list-deleted", (topic, list) => {
+            const setCorrectList = list.public ? setPublicLists : setPrivateLists;
+            setCorrectList((prevList) => prevList.filter(item => item.id !== list.listId));
+            if (selectedList === list.listId) {
                 selectList(null);
                 navigate('/todos?deleted');
             }
